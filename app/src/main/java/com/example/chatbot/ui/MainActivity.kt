@@ -35,6 +35,9 @@ class MainActivity : AppCompatActivity() {
         }
         mainViewModel.messageList.observe(this, {
             messageRVAdapter.submitList(it)
+            messageRVAdapter.notifyDataSetChanged()
+            if (it.count() > 0)
+            idChats.smoothScrollToPosition(it.count()-1)
         })
     }
 
