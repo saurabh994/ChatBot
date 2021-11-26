@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatbot.R
 import com.example.chatbot.data.response.Message
+import com.example.chatbot.widget.isConnected
+import com.example.chatbot.widget.toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.ArrayList
 
@@ -25,13 +27,14 @@ class MainActivity : AppCompatActivity() {
             this.adapter = messageRVAdapter
         }
         idIBSend.setOnClickListener {
-            if (idEdtMessage.text.toString().isEmpty()) {
-                Toast.makeText(this@MainActivity, "Please enter your message..", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                mainViewModel.sendMessage(idEdtMessage.text.toString())
-                idEdtMessage.setText("")
-            }
+            if (isConnected) {
+                if (idEdtMessage.text.toString().isEmpty()) {
+                    toast("Please enter your message..")
+                } else {
+                    mainViewModel.sendMessage(idEdtMessage.text.toString())
+                    idEdtMessage.setText("")
+                }
+            } else toast("No Network Available")
         }
         mainViewModel.messageList.observe(this, {
             messageRVAdapter.submitList(it)

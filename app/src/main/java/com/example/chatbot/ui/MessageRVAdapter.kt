@@ -8,25 +8,28 @@ import androidx.recyclerview.widget.*
 import android.widget.TextView
 import com.example.chatbot.R
 import com.example.chatbot.data.response.Message
+import com.example.chatbot.databinding.BotMsgBinding
+import com.example.chatbot.databinding.UserMsgBinding
 
 class MessageRVAdapter :
     ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+    private lateinit var userMsgBinding : UserMsgBinding
+    private lateinit var botMsgBinding: BotMsgBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view: View
         val layoutInflator = LayoutInflater.from(parent.context)
         return when (viewType) {
             0 -> {
-                view = layoutInflator.inflate(R.layout.user_msg, parent, false)
-                UserViewHolder(view)
+                userMsgBinding = UserMsgBinding.inflate(layoutInflator, parent, false)
+                UserViewHolder(userMsgBinding)
             }
             1 -> {
-                view = layoutInflator.inflate(R.layout.bot_msg, parent, false)
-                BotViewHolder(view)
+                botMsgBinding = BotMsgBinding.inflate(layoutInflator, parent, false)
+                BotViewHolder(botMsgBinding)
             }
             else -> {
-                view = layoutInflator.inflate(R.layout.bot_msg, parent, false)
-                BotViewHolder(view)
+                botMsgBinding = BotMsgBinding.inflate(layoutInflator, parent, false)
+                BotViewHolder(botMsgBinding)
             }
         }
     }
@@ -35,14 +38,13 @@ class MessageRVAdapter :
         val modal: Message = getItem(position)
         when (modal.sender) {
             "user" ->
-                (holder as UserViewHolder).userTV.text = modal.message
+                userMsgBinding.idTVUser.text = modal.message
             "bot" ->
-                (holder as BotViewHolder).botTV.text = modal.message
+                botMsgBinding.idTVBot.text = modal.message
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        //below line of code is to set position.
         return when (getItem(position).sender) {
             "user" -> 0
             "bot" -> 1
@@ -50,15 +52,9 @@ class MessageRVAdapter :
         }
     }
 
-    class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        //creating a variable for our text view.
-        var userTV: TextView = itemView.findViewById(R.id.idTVUser)
-    }
+    inner class UserViewHolder(binding: UserMsgBinding) : RecyclerView.ViewHolder(binding.root)
 
-    class BotViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        //creating a variable for our text view.
-        var botTV: TextView = itemView.findViewById(R.id.idTVBot)
-    }
+    inner class BotViewHolder(binding: BotMsgBinding) : RecyclerView.ViewHolder(binding.root)
 
     companion object {
         var DIFF_CALLBACK: DiffUtil.ItemCallback<Message> =

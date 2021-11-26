@@ -1,8 +1,18 @@
 package com.example.chatbot.widget
 
-import androidx.lifecycle.MutableLiveData
+import android.content.Context
+import android.net.ConnectivityManager
+import android.widget.Toast
 
 
-fun <T> MutableLiveData<T>.notify() {
-    value = value
+val Context.isConnected: Boolean
+    get() = (getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager)?.activeNetworkInfo?.isConnected == true
+
+fun Context.toast(msg: String) {
+    Toast.makeText(
+        this,
+        msg,
+        Toast.LENGTH_SHORT
+    )
+        .show()
 }
