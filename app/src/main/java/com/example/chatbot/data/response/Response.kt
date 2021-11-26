@@ -26,5 +26,7 @@ data class Message(
 	val chatBotID: Int? = null,
 
 	@field:SerializedName("message")
-	val message: String? = null
+	val message: String? = null,
+
+	val sender: String? = null
 )
