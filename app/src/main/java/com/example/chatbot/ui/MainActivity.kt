@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatbot.R
@@ -12,21 +13,18 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
-    private val messageModalArrayList= ArrayList<Message>()
-    private lateinit var messageRVAdapter: MessageRVAdapter
     private val mainViewModel: MainViewModel by viewModels ()
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private val messageRVAdapter by lazy {
+        MessageRVAdapter()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         idChats.apply {
-            messageRVAdapter = MessageRVAdapter(messageModalArrayList)
-            linearLayoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
             this.adapter = messageRVAdapter
         }
         idIBSend.setOnClickListener {
-
             if (idEdtMessage.text.toString().isEmpty()) {
                 Toast.makeText(this@MainActivity, "Please enter your message..", Toast.LENGTH_SHORT)
                     .show()
@@ -35,5 +33,13 @@ class MainActivity : AppCompatActivity() {
                 idEdtMessage.setText("")
             }
         }
+        mainViewModel.messageList.observe(this, {
+            messageRVAdapter.submitList(it)
+        })
+    }
+
+    companion object {
+        const val USER_KEY = "user"
+        const val BOT_KEY = "bot"
     }
 }

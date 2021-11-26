@@ -28,5 +28,7 @@ data class Message(
 	@field:SerializedName("message")
 	val message: String? = null,
 
-	val sender: String? = null
+	var sender: String? = null,
+
+    var id: Long = System.currentTimeMillis()
 )

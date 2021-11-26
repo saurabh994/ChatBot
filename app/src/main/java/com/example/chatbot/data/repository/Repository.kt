@@ -9,7 +9,7 @@ class Repository {
 
     private var api: ApiInterface = ApiClient.getApi()
 
-    suspend fun sendMessage(message: String): Response<com.example.chatbot.data.response.Response> {
+    suspend fun sendMessage(message: String): com.example.chatbot.data.response.Response {
         return api.sendMessage(message = message)
     }
 }

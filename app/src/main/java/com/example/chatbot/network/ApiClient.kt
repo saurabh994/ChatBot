@@ -19,9 +19,7 @@ object ApiClient {
             .followSslRedirects(true)
 
         val loggingInterceptor = HttpLoggingInterceptor()
-        if (BuildConfig.DEBUG) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        }
         httpClient.addInterceptor(loggingInterceptor)
         return httpClient.build()
     }

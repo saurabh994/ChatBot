@@ -8,5 +8,5 @@ interface ApiInterface {
     @POST("api/chat/")
     suspend fun sendMessage(@Query("apiKey") apiKey: String =
     "6nt5d1nJHkqbkphe", @Query("message") message: String, @Query("chatBotID") chatBotID: String = "63906",
-                            @Query("externalID") externalID: String = "chirag1"): Response<com.example.chatbot.data.response.Response>
+                            @Query("externalID") externalID: String = "chirag1"): com.example.chatbot.data.response.Response
 }

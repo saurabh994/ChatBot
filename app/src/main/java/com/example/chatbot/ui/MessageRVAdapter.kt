@@ -4,39 +4,35 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import androidx.recyclerview.widget.*
 import android.widget.TextView
-import androidx.annotation.NonNull
 import com.example.chatbot.R
 import com.example.chatbot.data.response.Message
-import java.util.ArrayList
 
-class MessageRVAdapter(messageModalArrayList: ArrayList<Message>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var messageModalArrayList= ArrayList<Message>()
+class MessageRVAdapter :
+    ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view: View
-        when (viewType) {
+        val layoutInflator = LayoutInflater.from(parent.context)
+        return when (viewType) {
             0 -> {
-                //below line we are inflating user message layout.
-                view = LayoutInflater.from(parent.context).inflate(R.layout.user_msg, parent, false)
-                return UserViewHolder(view)
+                view = layoutInflator.inflate(R.layout.user_msg, parent, false)
+                UserViewHolder(view)
             }
             1 -> {
-                //below line we are inflating bot message layout.
-                view = LayoutInflater.from(parent.context).inflate(R.layout.bot_msg, parent, false)
-                return BotViewHolder(view)
+                view = layoutInflator.inflate(R.layout.bot_msg, parent, false)
+                BotViewHolder(view)
             }
             else -> {
-                view = LayoutInflater.from(parent.context).inflate(R.layout.bot_msg, parent, false)
-                return BotViewHolder(view)
+                view = layoutInflator.inflate(R.layout.bot_msg, parent, false)
+                BotViewHolder(view)
             }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        //this method is use to set data to our layout file.
-        val modal: Message = messageModalArrayList[position]
+        val modal: Message = getItem(position)
         when (modal.sender) {
             "user" ->
                 (holder as UserViewHolder).userTV.text = modal.message
@@ -47,7 +43,7 @@ class MessageRVAdapter(messageModalArrayList: ArrayList<Message>) :
 
     override fun getItemViewType(position: Int): Int {
         //below line of code is to set position.
-        return when (messageModalArrayList[position].sender) {
+        return when (getItem(position).sender) {
             "user" -> 0
             "bot" -> 1
             else -> -1
@@ -56,29 +52,30 @@ class MessageRVAdapter(messageModalArrayList: ArrayList<Message>) :
 
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //creating a variable for our text view.
-        var userTV: TextView
-
-        init {
-            userTV = itemView.findViewById(R.id.idTVUser)
-        }
+        var userTV: TextView = itemView.findViewById(R.id.idTVUser)
     }
 
     class BotViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //creating a variable for our text view.
-        var botTV: TextView
-
-        init {
-            //initializing with id.
-            botTV = itemView.findViewById(R.id.idTVBot)
-        }
+        var botTV: TextView = itemView.findViewById(R.id.idTVBot)
     }
 
-    override fun getItemCount(): Int {
-        //return the size of array list
-        return messageModalArrayList.size
-    }
+    companion object {
+        var DIFF_CALLBACK: DiffUtil.ItemCallback<Message> =
+            object : DiffUtil.ItemCallback<Message>() {
+                override fun areItemsTheSame(
+                    inputParams: Message,
+                    t1: Message
+                ): Boolean {
+                    return inputParams == t1
+                }
 
-    init {
-        this.messageModalArrayList = messageModalArrayList
+                override fun areContentsTheSame(
+                    inputParams: Message,
+                    t1: Message
+                ): Boolean {
+                    return inputParams.id == t1.id
+                }
+            }
     }
 }
